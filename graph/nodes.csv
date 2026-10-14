@@ -1,0 +1,45 @@
+id:ID,name,env,crown_jewel:boolean,privileged:boolean,note,:LABEL
+internet,Internet,public,false,false,,Asset;Internet
+acct-prod,kestrel-prod,prod,false,false,,Asset;Account
+acct-staging,kestrel-staging,staging,false,false,,Asset;Account
+acct-ci,kestrel-ci,ci,false,false,,Asset;Account
+acct-dev,kestrel-dev,dev,false,false,,Asset;Account
+lb-checkout,checkout-public-lb,prod,false,false,,Asset;LoadBalancer
+lb-partner-api,partner-api-lb,prod,false,false,,Asset;LoadBalancer
+vm-checkout-01,checkout-web-01,prod,false,false,,Asset;VM
+vm-checkout-02,checkout-web-02,prod,false,false,,Asset;VM
+vm-bastion,bastion-01,prod,false,false,SSH from the internet,Asset;VM
+vm-ci-runner,ci-runner-03,ci,false,false,,Asset;VM
+vm-ds-sandbox,ds-sandbox-17,dev,false,false,Public Jupyter for data science,Asset;VM
+ctr-ledger,ledger-svc,prod,false,false,,Asset;Container
+ctr-partner-gw,partner-gateway,prod,false,false,,Asset;Container
+ctr-reports,reports-worker,prod,false,false,,Asset;Container
+ctr-k8s-dash,k8s-dashboard,staging,false,false,Exposed by mistake,Asset;Container
+ctr-metrics,metrics-agent,prod,false,false,,Asset;Container
+key-ci-deployer,AKIA…DEPLOY (ci-deployer),ci,false,false,,Asset;AccessKey
+key-analytics-intern,AKIA…INTERN (analytics-intern),dev,false,false,,Asset;AccessKey
+role-checkout-web,checkout-web-instance,prod,false,false,,Asset;Role
+role-ledger,ledger-service,prod,false,false,,Asset;Role
+role-partner-gw,partner-gateway,prod,false,false,,Asset;Role
+role-reports,reports-exporter,prod,false,false,,Asset;Role
+role-metrics,metrics-agent,prod,false,false,,Asset;Role
+role-ci-runner,ci-runner-instance,ci,false,false,,Asset;Role
+role-ci-deployer,ci-deployer,ci,false,false,,Asset;Role
+role-prod-deploy,prod-deploy,prod,false,true,,Asset;Role
+role-ds-sandbox,ds-sandbox,dev,false,false,,Asset;Role
+role-analytics-ro,analytics-readonly,dev,false,false,,Asset;Role
+role-staging-admin,staging-admin,staging,false,true,,Asset;Role
+role-observability,shared-observability,prod,false,false,,Asset;Role
+sec-ledger-db,ledger-db-credentials,prod,false,false,,Asset;Secret
+sec-redis,checkout-redis-password,prod,false,false,,Asset;Secret
+sec-partner-hmac,partner-hmac-keys,prod,false,false,,Asset;Secret
+sec-staging-db,staging-orders-db,staging,false,false,,Asset;Secret
+sec-replica-ro,ledger-replica-readonly,prod,false,false,,Asset;Secret
+db-ledger,payments-ledger (Postgres),prod,true,false,,Asset;DataStore
+bkt-customer-pii,customer-kyc-documents (bucket),prod,true,false,,Asset;DataStore
+db-ledger-replica,ledger-replica (Postgres),prod,true,false,,Asset;DataStore
+cache-checkout,checkout-sessions (Redis),prod,false,false,,Asset;DataStore
+db-staging-orders,staging-orders (Postgres),staging,false,false,,Asset;DataStore
+bkt-dev-scratch,ds-scratch (bucket),dev,false,false,,Asset;DataStore
+bkt-marketing,marketing-assets (bucket),dev,false,false,,Asset;DataStore
+bkt-metrics,metrics-archive (bucket),prod,false,false,,Asset;DataStore

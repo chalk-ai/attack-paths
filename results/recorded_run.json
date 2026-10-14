@@ -1,0 +1,1500 @@
+{
+ "branch": "attack-paths",
+ "recorded_at": "2026-10-14T17:15:50Z",
+ "runs": [
+  {
+   "alert_id": "ALR-1041",
+   "features": {
+    "title": "Crypto-miner process on checkout-web-01",
+    "kind": "suspicious_process",
+    "target_id": "vm-checkout-01",
+    "target_name": "checkout-web-01",
+    "target_label": "VM",
+    "severity": "medium",
+    "source": "EDR",
+    "min_hops_to_crown_jewel": 3,
+    "crown_jewels_reachable": 1,
+    "path_count": 2,
+    "blast_radius": 7,
+    "secrets_reachable": 2,
+    "privileged_roles_reachable": 0,
+    "internet_hops": 2,
+    "attack_path": {
+     "edges": [
+      {
+       "detail": "8080",
+       "dst": "ctr-ledger",
+       "src": "vm-checkout-01",
+       "type": "CAN_REACH"
+      },
+      {
+       "detail": "",
+       "dst": "role-ledger",
+       "src": "ctr-ledger",
+       "type": "RUNS_AS"
+      },
+      {
+       "detail": "rds-db:connect",
+       "dst": "db-ledger",
+       "src": "role-ledger",
+       "type": "CAN_READ"
+      }
+     ],
+     "nodes": [
+      "vm-checkout-01",
+      "ctr-ledger",
+      "role-ledger",
+      "db-ledger"
+     ]
+    },
+    "entry_path": {
+     "edges": [
+      {
+       "detail": "443",
+       "dst": "lb-checkout",
+       "src": "internet",
+       "type": "EXPOSES"
+      },
+      {
+       "detail": "443",
+       "dst": "vm-checkout-01",
+       "src": "lb-checkout",
+       "type": "ROUTES_TO"
+      }
+     ],
+     "nodes": [
+      "internet",
+      "lb-checkout",
+      "vm-checkout-01"
+     ]
+    },
+    "neighborhood": {
+     "edges": [
+      {
+       "crown_path": true,
+       "detail": "8080",
+       "dst": "ctr-ledger",
+       "src": "vm-checkout-01",
+       "type": "CAN_REACH"
+      },
+      {
+       "crown_path": true,
+       "detail": "",
+       "dst": "role-ledger",
+       "src": "ctr-ledger",
+       "type": "RUNS_AS"
+      },
+      {
+       "crown_path": true,
+       "detail": "rds-db:connect",
+       "dst": "db-ledger",
+       "src": "role-ledger",
+       "type": "CAN_READ"
+      },
+      {
+       "crown_path": false,
+       "detail": "443",
+       "dst": "lb-checkout",
+       "src": "internet",
+       "type": "EXPOSES"
+      },
+      {
+       "crown_path": false,
+       "detail": "443",
+       "dst": "vm-checkout-01",
+       "src": "lb-checkout",
+       "type": "ROUTES_TO"
+      },
+      {
+       "crown_path": false,
+       "detail": "6379",
+       "dst": "cache-checkout",
+       "src": "vm-checkout-01",
+       "type": "CAN_REACH"
+      },
+      {
+       "crown_path": false,
+       "detail": "",
+       "dst": "role-checkout-web",
+       "src": "vm-checkout-01",
+       "type": "RUNS_AS"
+      },
+      {
+       "crown_path": false,
+       "detail": "secrets:GetSecretValue",
+       "dst": "sec-ledger-db",
+       "src": "role-checkout-web",
+       "type": "CAN_READ"
+      },
+      {
+       "crown_path": false,
+       "detail": "secrets:GetSecretValue",
+       "dst": "sec-redis",
+       "src": "role-checkout-web",
+       "type": "CAN_READ"
+      }
+     ],
+     "nodes": [
+      {
+       "crown_jewel": false,
+       "env": "public",
+       "id": "internet",
+       "label": "Internet",
+       "name": "Internet",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "lb-checkout",
+       "label": "LoadBalancer",
+       "name": "checkout-public-lb",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "vm-checkout-01",
+       "label": "VM",
+       "name": "checkout-web-01",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "ctr-ledger",
+       "label": "Container",
+       "name": "ledger-svc",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "role-checkout-web",
+       "label": "Role",
+       "name": "checkout-web-instance",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "role-ledger",
+       "label": "Role",
+       "name": "ledger-service",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "sec-ledger-db",
+       "label": "Secret",
+       "name": "ledger-db-credentials",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "sec-redis",
+       "label": "Secret",
+       "name": "checkout-redis-password",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": true,
+       "env": "prod",
+       "id": "db-ledger",
+       "label": "DataStore",
+       "name": "payments-ledger (Postgres)",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "cache-checkout",
+       "label": "DataStore",
+       "name": "checkout-sessions (Redis)",
+       "note": "",
+       "privileged": false
+      }
+     ]
+    },
+    "graph_ms": 75.81668099999206,
+    "proximity": 0.44000000000000006,
+    "exposure_score": 0.15,
+    "credential_score": 0.0,
+    "privilege_score": 0.0,
+    "severity_score": 0.05,
+    "breadth_score": 0.0,
+    "risk_score": 0.6400000000000001,
+    "triage": "prioritize"
+   },
+   "query_ms": 4035.3,
+   "query_id": "cmv8df2f100mr0iwv3qez2itx"
+  },
+  {
+   "alert_id": "ALR-1042",
+   "features": {
+    "title": "Crypto-miner process on ds-sandbox-17",
+    "kind": "suspicious_process",
+    "target_id": "vm-ds-sandbox",
+    "target_name": "ds-sandbox-17",
+    "target_label": "VM",
+    "severity": "medium",
+    "source": "EDR",
+    "min_hops_to_crown_jewel": null,
+    "crown_jewels_reachable": 0,
+    "path_count": 0,
+    "blast_radius": 2,
+    "secrets_reachable": 0,
+    "privileged_roles_reachable": 0,
+    "internet_hops": 1,
+    "attack_path": {
+     "edges": [],
+     "nodes": []
+    },
+    "entry_path": {
+     "edges": [
+      {
+       "detail": "8888",
+       "dst": "vm-ds-sandbox",
+       "src": "internet",
+       "type": "EXPOSES"
+      }
+     ],
+     "nodes": [
+      "internet",
+      "vm-ds-sandbox"
+     ]
+    },
+    "neighborhood": {
+     "edges": [
+      {
+       "crown_path": false,
+       "detail": "8888",
+       "dst": "vm-ds-sandbox",
+       "src": "internet",
+       "type": "EXPOSES"
+      },
+      {
+       "crown_path": false,
+       "detail": "",
+       "dst": "role-ds-sandbox",
+       "src": "vm-ds-sandbox",
+       "type": "RUNS_AS"
+      },
+      {
+       "crown_path": false,
+       "detail": "s3:*",
+       "dst": "bkt-dev-scratch",
+       "src": "role-ds-sandbox",
+       "type": "CAN_READ"
+      }
+     ],
+     "nodes": [
+      {
+       "crown_jewel": false,
+       "env": "public",
+       "id": "internet",
+       "label": "Internet",
+       "name": "Internet",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "dev",
+       "id": "vm-ds-sandbox",
+       "label": "VM",
+       "name": "ds-sandbox-17",
+       "note": "Public Jupyter for data science",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "dev",
+       "id": "role-ds-sandbox",
+       "label": "Role",
+       "name": "ds-sandbox",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "dev",
+       "id": "bkt-dev-scratch",
+       "label": "DataStore",
+       "name": "ds-scratch (bucket)",
+       "note": "",
+       "privileged": false
+      }
+     ]
+    },
+    "graph_ms": 68.44747899998538,
+    "proximity": 0.0,
+    "exposure_score": 0.15,
+    "credential_score": 0.0,
+    "privilege_score": 0.0,
+    "severity_score": 0.05,
+    "breadth_score": 0.0,
+    "risk_score": 0.2,
+    "triage": "dismiss"
+   },
+   "query_ms": 2546.7,
+   "query_id": "cmv8df4zn00v50iwvzkycaqdg"
+  },
+  {
+   "alert_id": "ALR-1043",
+   "features": {
+    "title": "ci-deployer access key found in a public repository",
+    "kind": "leaked_credential",
+    "target_id": "key-ci-deployer",
+    "target_name": "AKIA\u2026DEPLOY (ci-deployer)",
+    "target_label": "AccessKey",
+    "severity": "high",
+    "source": "Secret scanning",
+    "min_hops_to_crown_jewel": 4,
+    "crown_jewels_reachable": 2,
+    "path_count": 2,
+    "blast_radius": 5,
+    "secrets_reachable": 0,
+    "privileged_roles_reachable": 1,
+    "internet_hops": null,
+    "attack_path": {
+     "edges": [
+      {
+       "detail": "",
+       "dst": "role-ci-deployer",
+       "src": "key-ci-deployer",
+       "type": "AUTHENTICATES_AS"
+      },
+      {
+       "detail": "",
+       "dst": "role-prod-deploy",
+       "src": "role-ci-deployer",
+       "type": "CAN_ASSUME"
+      },
+      {
+       "detail": "AdministratorAccess",
+       "dst": "acct-prod",
+       "src": "role-prod-deploy",
+       "type": "ADMIN_OF"
+      },
+      {
+       "detail": "",
+       "dst": "bkt-customer-pii",
+       "src": "acct-prod",
+       "type": "CONTAINS"
+      }
+     ],
+     "nodes": [
+      "key-ci-deployer",
+      "role-ci-deployer",
+      "role-prod-deploy",
+      "acct-prod",
+      "bkt-customer-pii"
+     ]
+    },
+    "entry_path": {
+     "edges": [],
+     "nodes": []
+    },
+    "neighborhood": {
+     "edges": [
+      {
+       "crown_path": true,
+       "detail": "",
+       "dst": "role-ci-deployer",
+       "src": "key-ci-deployer",
+       "type": "AUTHENTICATES_AS"
+      },
+      {
+       "crown_path": true,
+       "detail": "",
+       "dst": "role-prod-deploy",
+       "src": "role-ci-deployer",
+       "type": "CAN_ASSUME"
+      },
+      {
+       "crown_path": true,
+       "detail": "AdministratorAccess",
+       "dst": "acct-prod",
+       "src": "role-prod-deploy",
+       "type": "ADMIN_OF"
+      },
+      {
+       "crown_path": true,
+       "detail": "",
+       "dst": "bkt-customer-pii",
+       "src": "acct-prod",
+       "type": "CONTAINS"
+      },
+      {
+       "crown_path": true,
+       "detail": "",
+       "dst": "db-ledger",
+       "src": "acct-prod",
+       "type": "CONTAINS"
+      }
+     ],
+     "nodes": [
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "acct-prod",
+       "label": "Account",
+       "name": "kestrel-prod",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "ci",
+       "id": "key-ci-deployer",
+       "label": "AccessKey",
+       "name": "AKIA\u2026DEPLOY (ci-deployer)",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "ci",
+       "id": "role-ci-deployer",
+       "label": "Role",
+       "name": "ci-deployer",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "role-prod-deploy",
+       "label": "Role",
+       "name": "prod-deploy",
+       "note": "",
+       "privileged": true
+      },
+      {
+       "crown_jewel": true,
+       "env": "prod",
+       "id": "db-ledger",
+       "label": "DataStore",
+       "name": "payments-ledger (Postgres)",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": true,
+       "env": "prod",
+       "id": "bkt-customer-pii",
+       "label": "DataStore",
+       "name": "customer-kyc-documents (bucket)",
+       "note": "",
+       "privileged": false
+      }
+     ]
+    },
+    "graph_ms": 67.25417100000186,
+    "proximity": 0.32000000000000006,
+    "exposure_score": 0.0,
+    "credential_score": 0.15,
+    "privilege_score": 0.05,
+    "severity_score": 0.1,
+    "breadth_score": 0.0,
+    "risk_score": 0.6200000000000001,
+    "triage": "prioritize"
+   },
+   "query_ms": 2406.7,
+   "query_id": "cmv8df6uj00v70iwv8odyihk8"
+  },
+  {
+   "alert_id": "ALR-1044",
+   "features": {
+    "title": "analytics-intern access key found in a public gist",
+    "kind": "leaked_credential",
+    "target_id": "key-analytics-intern",
+    "target_name": "AKIA\u2026INTERN (analytics-intern)",
+    "target_label": "AccessKey",
+    "severity": "high",
+    "source": "Secret scanning",
+    "min_hops_to_crown_jewel": null,
+    "crown_jewels_reachable": 0,
+    "path_count": 0,
+    "blast_radius": 3,
+    "secrets_reachable": 0,
+    "privileged_roles_reachable": 0,
+    "internet_hops": null,
+    "attack_path": {
+     "edges": [],
+     "nodes": []
+    },
+    "entry_path": {
+     "edges": [],
+     "nodes": []
+    },
+    "neighborhood": {
+     "edges": [
+      {
+       "crown_path": false,
+       "detail": "",
+       "dst": "role-analytics-ro",
+       "src": "key-analytics-intern",
+       "type": "AUTHENTICATES_AS"
+      },
+      {
+       "crown_path": false,
+       "detail": "s3:GetObject",
+       "dst": "bkt-marketing",
+       "src": "role-analytics-ro",
+       "type": "CAN_READ"
+      },
+      {
+       "crown_path": false,
+       "detail": "s3:GetObject",
+       "dst": "bkt-dev-scratch",
+       "src": "role-analytics-ro",
+       "type": "CAN_READ"
+      }
+     ],
+     "nodes": [
+      {
+       "crown_jewel": false,
+       "env": "dev",
+       "id": "key-analytics-intern",
+       "label": "AccessKey",
+       "name": "AKIA\u2026INTERN (analytics-intern)",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "dev",
+       "id": "role-analytics-ro",
+       "label": "Role",
+       "name": "analytics-readonly",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "dev",
+       "id": "bkt-dev-scratch",
+       "label": "DataStore",
+       "name": "ds-scratch (bucket)",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "dev",
+       "id": "bkt-marketing",
+       "label": "DataStore",
+       "name": "marketing-assets (bucket)",
+       "note": "",
+       "privileged": false
+      }
+     ]
+    },
+    "graph_ms": 62.35095900001397,
+    "proximity": 0.0,
+    "exposure_score": 0.0,
+    "credential_score": 0.15,
+    "privilege_score": 0.0,
+    "severity_score": 0.1,
+    "breadth_score": 0.0,
+    "risk_score": 0.25,
+    "triage": "dismiss"
+   },
+   "query_ms": 2468.0,
+   "query_id": "cmv8df8r800v90iwv5ch2cbhq"
+  },
+  {
+   "alert_id": "ALR-1045",
+   "features": {
+    "title": "Kubernetes dashboard reachable from the internet",
+    "kind": "exposed_service",
+    "target_id": "ctr-k8s-dash",
+    "target_name": "k8s-dashboard",
+    "target_label": "Container",
+    "severity": "medium",
+    "source": "Attack surface scan",
+    "min_hops_to_crown_jewel": 4,
+    "crown_jewels_reachable": 1,
+    "path_count": 1,
+    "blast_radius": 8,
+    "secrets_reachable": 2,
+    "privileged_roles_reachable": 1,
+    "internet_hops": 1,
+    "attack_path": {
+     "edges": [
+      {
+       "detail": "",
+       "dst": "role-staging-admin",
+       "src": "ctr-k8s-dash",
+       "type": "RUNS_AS"
+      },
+      {
+       "detail": "",
+       "dst": "role-observability",
+       "src": "role-staging-admin",
+       "type": "CAN_ASSUME"
+      },
+      {
+       "detail": "secrets:GetSecretValue",
+       "dst": "sec-replica-ro",
+       "src": "role-observability",
+       "type": "CAN_READ"
+      },
+      {
+       "detail": "postgres login",
+       "dst": "db-ledger-replica",
+       "src": "sec-replica-ro",
+       "type": "GRANTS"
+      }
+     ],
+     "nodes": [
+      "ctr-k8s-dash",
+      "role-staging-admin",
+      "role-observability",
+      "sec-replica-ro",
+      "db-ledger-replica"
+     ]
+    },
+    "entry_path": {
+     "edges": [
+      {
+       "detail": "8443",
+       "dst": "ctr-k8s-dash",
+       "src": "internet",
+       "type": "EXPOSES"
+      }
+     ],
+     "nodes": [
+      "internet",
+      "ctr-k8s-dash"
+     ]
+    },
+    "neighborhood": {
+     "edges": [
+      {
+       "crown_path": true,
+       "detail": "",
+       "dst": "role-staging-admin",
+       "src": "ctr-k8s-dash",
+       "type": "RUNS_AS"
+      },
+      {
+       "crown_path": true,
+       "detail": "",
+       "dst": "role-observability",
+       "src": "role-staging-admin",
+       "type": "CAN_ASSUME"
+      },
+      {
+       "crown_path": true,
+       "detail": "secrets:GetSecretValue",
+       "dst": "sec-replica-ro",
+       "src": "role-observability",
+       "type": "CAN_READ"
+      },
+      {
+       "crown_path": true,
+       "detail": "postgres login",
+       "dst": "db-ledger-replica",
+       "src": "sec-replica-ro",
+       "type": "GRANTS"
+      },
+      {
+       "crown_path": false,
+       "detail": "8443",
+       "dst": "ctr-k8s-dash",
+       "src": "internet",
+       "type": "EXPOSES"
+      },
+      {
+       "crown_path": false,
+       "detail": "secrets:GetSecretValue",
+       "dst": "sec-staging-db",
+       "src": "role-staging-admin",
+       "type": "CAN_READ"
+      },
+      {
+       "crown_path": false,
+       "detail": "AdministratorAccess",
+       "dst": "acct-staging",
+       "src": "role-staging-admin",
+       "type": "ADMIN_OF"
+      }
+     ],
+     "nodes": [
+      {
+       "crown_jewel": false,
+       "env": "public",
+       "id": "internet",
+       "label": "Internet",
+       "name": "Internet",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "staging",
+       "id": "acct-staging",
+       "label": "Account",
+       "name": "kestrel-staging",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "staging",
+       "id": "ctr-k8s-dash",
+       "label": "Container",
+       "name": "k8s-dashboard",
+       "note": "Exposed by mistake",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "staging",
+       "id": "role-staging-admin",
+       "label": "Role",
+       "name": "staging-admin",
+       "note": "",
+       "privileged": true
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "role-observability",
+       "label": "Role",
+       "name": "shared-observability",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "staging",
+       "id": "sec-staging-db",
+       "label": "Secret",
+       "name": "staging-orders-db",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "sec-replica-ro",
+       "label": "Secret",
+       "name": "ledger-replica-readonly",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": true,
+       "env": "prod",
+       "id": "db-ledger-replica",
+       "label": "DataStore",
+       "name": "ledger-replica (Postgres)",
+       "note": "",
+       "privileged": false
+      }
+     ]
+    },
+    "graph_ms": 72.72955900003808,
+    "proximity": 0.32000000000000006,
+    "exposure_score": 0.15,
+    "credential_score": 0.0,
+    "privilege_score": 0.05,
+    "severity_score": 0.05,
+    "breadth_score": 0.0,
+    "risk_score": 0.5700000000000002,
+    "triage": "monitor"
+   },
+   "query_ms": 2405.0,
+   "query_id": "cmv8dfalr00vb0iwvcr2l2fkf"
+  },
+  {
+   "alert_id": "ALR-1046",
+   "features": {
+    "title": "SSH brute force against bastion-01",
+    "kind": "brute_force",
+    "target_id": "vm-bastion",
+    "target_name": "bastion-01",
+    "target_label": "VM",
+    "severity": "low",
+    "source": "Network IDS",
+    "min_hops_to_crown_jewel": 4,
+    "crown_jewels_reachable": 2,
+    "path_count": 4,
+    "blast_radius": 14,
+    "secrets_reachable": 2,
+    "privileged_roles_reachable": 1,
+    "internet_hops": 1,
+    "attack_path": {
+     "edges": [
+      {
+       "detail": "22",
+       "dst": "vm-checkout-02",
+       "src": "vm-bastion",
+       "type": "CAN_REACH"
+      },
+      {
+       "detail": "8080",
+       "dst": "ctr-ledger",
+       "src": "vm-checkout-02",
+       "type": "CAN_REACH"
+      },
+      {
+       "detail": "",
+       "dst": "role-ledger",
+       "src": "ctr-ledger",
+       "type": "RUNS_AS"
+      },
+      {
+       "detail": "rds-db:connect",
+       "dst": "db-ledger",
+       "src": "role-ledger",
+       "type": "CAN_READ"
+      }
+     ],
+     "nodes": [
+      "vm-bastion",
+      "vm-checkout-02",
+      "ctr-ledger",
+      "role-ledger",
+      "db-ledger"
+     ]
+    },
+    "entry_path": {
+     "edges": [
+      {
+       "detail": "22",
+       "dst": "vm-bastion",
+       "src": "internet",
+       "type": "EXPOSES"
+      }
+     ],
+     "nodes": [
+      "internet",
+      "vm-bastion"
+     ]
+    },
+    "neighborhood": {
+     "edges": [
+      {
+       "crown_path": true,
+       "detail": "22",
+       "dst": "vm-checkout-02",
+       "src": "vm-bastion",
+       "type": "CAN_REACH"
+      },
+      {
+       "crown_path": true,
+       "detail": "8080",
+       "dst": "ctr-ledger",
+       "src": "vm-checkout-02",
+       "type": "CAN_REACH"
+      },
+      {
+       "crown_path": true,
+       "detail": "",
+       "dst": "role-ledger",
+       "src": "ctr-ledger",
+       "type": "RUNS_AS"
+      },
+      {
+       "crown_path": true,
+       "detail": "rds-db:connect",
+       "dst": "db-ledger",
+       "src": "role-ledger",
+       "type": "CAN_READ"
+      },
+      {
+       "crown_path": true,
+       "detail": "22",
+       "dst": "vm-ci-runner",
+       "src": "vm-bastion",
+       "type": "CAN_REACH"
+      },
+      {
+       "crown_path": true,
+       "detail": "",
+       "dst": "role-ci-runner",
+       "src": "vm-ci-runner",
+       "type": "RUNS_AS"
+      },
+      {
+       "crown_path": true,
+       "detail": "",
+       "dst": "role-ci-deployer",
+       "src": "role-ci-runner",
+       "type": "CAN_ASSUME"
+      },
+      {
+       "crown_path": true,
+       "detail": "",
+       "dst": "role-prod-deploy",
+       "src": "role-ci-deployer",
+       "type": "CAN_ASSUME"
+      },
+      {
+       "crown_path": true,
+       "detail": "AdministratorAccess",
+       "dst": "acct-prod",
+       "src": "role-prod-deploy",
+       "type": "ADMIN_OF"
+      },
+      {
+       "crown_path": true,
+       "detail": "",
+       "dst": "bkt-customer-pii",
+       "src": "acct-prod",
+       "type": "CONTAINS"
+      },
+      {
+       "crown_path": false,
+       "detail": "22",
+       "dst": "vm-bastion",
+       "src": "internet",
+       "type": "EXPOSES"
+      },
+      {
+       "crown_path": false,
+       "detail": "",
+       "dst": "role-checkout-web",
+       "src": "vm-checkout-02",
+       "type": "RUNS_AS"
+      }
+     ],
+     "nodes": [
+      {
+       "crown_jewel": false,
+       "env": "public",
+       "id": "internet",
+       "label": "Internet",
+       "name": "Internet",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "acct-prod",
+       "label": "Account",
+       "name": "kestrel-prod",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "vm-checkout-02",
+       "label": "VM",
+       "name": "checkout-web-02",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "vm-bastion",
+       "label": "VM",
+       "name": "bastion-01",
+       "note": "SSH from the internet",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "ci",
+       "id": "vm-ci-runner",
+       "label": "VM",
+       "name": "ci-runner-03",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "ctr-ledger",
+       "label": "Container",
+       "name": "ledger-svc",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "role-checkout-web",
+       "label": "Role",
+       "name": "checkout-web-instance",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "role-ledger",
+       "label": "Role",
+       "name": "ledger-service",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "ci",
+       "id": "role-ci-runner",
+       "label": "Role",
+       "name": "ci-runner-instance",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "ci",
+       "id": "role-ci-deployer",
+       "label": "Role",
+       "name": "ci-deployer",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "role-prod-deploy",
+       "label": "Role",
+       "name": "prod-deploy",
+       "note": "",
+       "privileged": true
+      },
+      {
+       "crown_jewel": true,
+       "env": "prod",
+       "id": "db-ledger",
+       "label": "DataStore",
+       "name": "payments-ledger (Postgres)",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": true,
+       "env": "prod",
+       "id": "bkt-customer-pii",
+       "label": "DataStore",
+       "name": "customer-kyc-documents (bucket)",
+       "note": "",
+       "privileged": false
+      }
+     ]
+    },
+    "graph_ms": 67.68483500002276,
+    "proximity": 0.32000000000000006,
+    "exposure_score": 0.15,
+    "credential_score": 0.0,
+    "privilege_score": 0.05,
+    "severity_score": 0.0,
+    "breadth_score": 0.05,
+    "risk_score": 0.5700000000000002,
+    "triage": "monitor"
+   },
+   "query_ms": 2576.9,
+   "query_id": "cmv8dfclf00vd0iwvby96nuyc"
+  },
+  {
+   "alert_id": "ALR-1047",
+   "features": {
+    "title": "Unusual bulk export by reports-worker",
+    "kind": "anomalous_access",
+    "target_id": "ctr-reports",
+    "target_name": "reports-worker",
+    "target_label": "Container",
+    "severity": "medium",
+    "source": "Cloud audit log",
+    "min_hops_to_crown_jewel": 2,
+    "crown_jewels_reachable": 2,
+    "path_count": 2,
+    "blast_radius": 8,
+    "secrets_reachable": 1,
+    "privileged_roles_reachable": 0,
+    "internet_hops": null,
+    "attack_path": {
+     "edges": [
+      {
+       "detail": "",
+       "dst": "role-reports",
+       "src": "ctr-reports",
+       "type": "RUNS_AS"
+      },
+      {
+       "detail": "s3:GetObject",
+       "dst": "bkt-customer-pii",
+       "src": "role-reports",
+       "type": "CAN_READ"
+      }
+     ],
+     "nodes": [
+      "ctr-reports",
+      "role-reports",
+      "bkt-customer-pii"
+     ]
+    },
+    "entry_path": {
+     "edges": [],
+     "nodes": []
+    },
+    "neighborhood": {
+     "edges": [
+      {
+       "crown_path": true,
+       "detail": "",
+       "dst": "role-reports",
+       "src": "ctr-reports",
+       "type": "RUNS_AS"
+      },
+      {
+       "crown_path": true,
+       "detail": "s3:GetObject",
+       "dst": "bkt-customer-pii",
+       "src": "role-reports",
+       "type": "CAN_READ"
+      },
+      {
+       "crown_path": true,
+       "detail": "9100",
+       "dst": "ctr-metrics",
+       "src": "ctr-reports",
+       "type": "CAN_REACH"
+      },
+      {
+       "crown_path": true,
+       "detail": "",
+       "dst": "role-metrics",
+       "src": "ctr-metrics",
+       "type": "RUNS_AS"
+      },
+      {
+       "crown_path": true,
+       "detail": "",
+       "dst": "role-observability",
+       "src": "role-metrics",
+       "type": "CAN_ASSUME"
+      },
+      {
+       "crown_path": true,
+       "detail": "secrets:GetSecretValue",
+       "dst": "sec-replica-ro",
+       "src": "role-observability",
+       "type": "CAN_READ"
+      },
+      {
+       "crown_path": true,
+       "detail": "postgres login",
+       "dst": "db-ledger-replica",
+       "src": "sec-replica-ro",
+       "type": "GRANTS"
+      }
+     ],
+     "nodes": [
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "ctr-reports",
+       "label": "Container",
+       "name": "reports-worker",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "ctr-metrics",
+       "label": "Container",
+       "name": "metrics-agent",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "role-reports",
+       "label": "Role",
+       "name": "reports-exporter",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "role-metrics",
+       "label": "Role",
+       "name": "metrics-agent",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "role-observability",
+       "label": "Role",
+       "name": "shared-observability",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "sec-replica-ro",
+       "label": "Secret",
+       "name": "ledger-replica-readonly",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": true,
+       "env": "prod",
+       "id": "bkt-customer-pii",
+       "label": "DataStore",
+       "name": "customer-kyc-documents (bucket)",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": true,
+       "env": "prod",
+       "id": "db-ledger-replica",
+       "label": "DataStore",
+       "name": "ledger-replica (Postgres)",
+       "note": "",
+       "privileged": false
+      }
+     ]
+    },
+    "graph_ms": 69.01522800001203,
+    "proximity": 0.56,
+    "exposure_score": 0.0,
+    "credential_score": 0.0,
+    "privilege_score": 0.0,
+    "severity_score": 0.05,
+    "breadth_score": 0.0,
+    "risk_score": 0.6100000000000001,
+    "triage": "prioritize"
+   },
+   "query_ms": 3805.0,
+   "query_id": "cmv8dffj300vf0iwv1vntnusm"
+  },
+  {
+   "alert_id": "ALR-1048",
+   "features": {
+    "title": "Malicious npm package installed in partner-gateway",
+    "kind": "suspicious_process",
+    "target_id": "ctr-partner-gw",
+    "target_name": "partner-gateway",
+    "target_label": "Container",
+    "severity": "high",
+    "source": "Container runtime",
+    "min_hops_to_crown_jewel": 3,
+    "crown_jewels_reachable": 1,
+    "path_count": 1,
+    "blast_radius": 5,
+    "secrets_reachable": 1,
+    "privileged_roles_reachable": 0,
+    "internet_hops": 2,
+    "attack_path": {
+     "edges": [
+      {
+       "detail": "8080",
+       "dst": "ctr-ledger",
+       "src": "ctr-partner-gw",
+       "type": "CAN_REACH"
+      },
+      {
+       "detail": "",
+       "dst": "role-ledger",
+       "src": "ctr-ledger",
+       "type": "RUNS_AS"
+      },
+      {
+       "detail": "rds-db:connect",
+       "dst": "db-ledger",
+       "src": "role-ledger",
+       "type": "CAN_READ"
+      }
+     ],
+     "nodes": [
+      "ctr-partner-gw",
+      "ctr-ledger",
+      "role-ledger",
+      "db-ledger"
+     ]
+    },
+    "entry_path": {
+     "edges": [
+      {
+       "detail": "443",
+       "dst": "lb-partner-api",
+       "src": "internet",
+       "type": "EXPOSES"
+      },
+      {
+       "detail": "443",
+       "dst": "ctr-partner-gw",
+       "src": "lb-partner-api",
+       "type": "ROUTES_TO"
+      }
+     ],
+     "nodes": [
+      "internet",
+      "lb-partner-api",
+      "ctr-partner-gw"
+     ]
+    },
+    "neighborhood": {
+     "edges": [
+      {
+       "crown_path": true,
+       "detail": "8080",
+       "dst": "ctr-ledger",
+       "src": "ctr-partner-gw",
+       "type": "CAN_REACH"
+      },
+      {
+       "crown_path": true,
+       "detail": "",
+       "dst": "role-ledger",
+       "src": "ctr-ledger",
+       "type": "RUNS_AS"
+      },
+      {
+       "crown_path": true,
+       "detail": "rds-db:connect",
+       "dst": "db-ledger",
+       "src": "role-ledger",
+       "type": "CAN_READ"
+      },
+      {
+       "crown_path": false,
+       "detail": "443",
+       "dst": "lb-partner-api",
+       "src": "internet",
+       "type": "EXPOSES"
+      },
+      {
+       "crown_path": false,
+       "detail": "443",
+       "dst": "ctr-partner-gw",
+       "src": "lb-partner-api",
+       "type": "ROUTES_TO"
+      },
+      {
+       "crown_path": false,
+       "detail": "",
+       "dst": "role-partner-gw",
+       "src": "ctr-partner-gw",
+       "type": "RUNS_AS"
+      },
+      {
+       "crown_path": false,
+       "detail": "secrets:GetSecretValue",
+       "dst": "sec-partner-hmac",
+       "src": "role-partner-gw",
+       "type": "CAN_READ"
+      }
+     ],
+     "nodes": [
+      {
+       "crown_jewel": false,
+       "env": "public",
+       "id": "internet",
+       "label": "Internet",
+       "name": "Internet",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "lb-partner-api",
+       "label": "LoadBalancer",
+       "name": "partner-api-lb",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "ctr-ledger",
+       "label": "Container",
+       "name": "ledger-svc",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "ctr-partner-gw",
+       "label": "Container",
+       "name": "partner-gateway",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "role-ledger",
+       "label": "Role",
+       "name": "ledger-service",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "role-partner-gw",
+       "label": "Role",
+       "name": "partner-gateway",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": false,
+       "env": "prod",
+       "id": "sec-partner-hmac",
+       "label": "Secret",
+       "name": "partner-hmac-keys",
+       "note": "",
+       "privileged": false
+      },
+      {
+       "crown_jewel": true,
+       "env": "prod",
+       "id": "db-ledger",
+       "label": "DataStore",
+       "name": "payments-ledger (Postgres)",
+       "note": "",
+       "privileged": false
+      }
+     ]
+    },
+    "graph_ms": 65.84725700002991,
+    "proximity": 0.44000000000000006,
+    "exposure_score": 0.15,
+    "credential_score": 0.0,
+    "privilege_score": 0.0,
+    "severity_score": 0.1,
+    "breadth_score": 0.0,
+    "risk_score": 0.6900000000000001,
+    "triage": "prioritize"
+   },
+   "query_ms": 3825.1,
+   "query_id": "cmv8dfihg00vh0iwvf6neyy7y"
+  }
+ ]
+}

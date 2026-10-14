@@ -1,0 +1,51 @@
+:START_ID,:END_ID,:TYPE,detail
+internet,lb-checkout,EXPOSES,443
+internet,lb-partner-api,EXPOSES,443
+internet,vm-bastion,EXPOSES,22
+internet,vm-ds-sandbox,EXPOSES,8888
+internet,ctr-k8s-dash,EXPOSES,8443
+lb-checkout,vm-checkout-01,ROUTES_TO,443
+lb-checkout,vm-checkout-02,ROUTES_TO,443
+lb-partner-api,ctr-partner-gw,ROUTES_TO,443
+vm-checkout-01,ctr-ledger,CAN_REACH,8080
+vm-checkout-02,ctr-ledger,CAN_REACH,8080
+vm-checkout-01,cache-checkout,CAN_REACH,6379
+ctr-partner-gw,ctr-ledger,CAN_REACH,8080
+vm-bastion,vm-ci-runner,CAN_REACH,22
+vm-bastion,vm-checkout-02,CAN_REACH,22
+ctr-reports,ctr-metrics,CAN_REACH,9100
+vm-checkout-01,role-checkout-web,RUNS_AS,
+vm-checkout-02,role-checkout-web,RUNS_AS,
+ctr-ledger,role-ledger,RUNS_AS,
+ctr-partner-gw,role-partner-gw,RUNS_AS,
+ctr-reports,role-reports,RUNS_AS,
+ctr-metrics,role-metrics,RUNS_AS,
+vm-ci-runner,role-ci-runner,RUNS_AS,
+vm-ds-sandbox,role-ds-sandbox,RUNS_AS,
+ctr-k8s-dash,role-staging-admin,RUNS_AS,
+key-ci-deployer,role-ci-deployer,AUTHENTICATES_AS,
+key-analytics-intern,role-analytics-ro,AUTHENTICATES_AS,
+role-ci-runner,role-ci-deployer,CAN_ASSUME,
+role-ci-deployer,role-prod-deploy,CAN_ASSUME,
+role-staging-admin,role-observability,CAN_ASSUME,
+role-metrics,role-observability,CAN_ASSUME,
+role-checkout-web,sec-ledger-db,CAN_READ,secrets:GetSecretValue
+role-checkout-web,sec-redis,CAN_READ,secrets:GetSecretValue
+role-ledger,db-ledger,CAN_READ,rds-db:connect
+role-partner-gw,sec-partner-hmac,CAN_READ,secrets:GetSecretValue
+role-reports,bkt-customer-pii,CAN_READ,s3:GetObject
+role-metrics,bkt-metrics,CAN_READ,s3:PutObject
+role-ds-sandbox,bkt-dev-scratch,CAN_READ,s3:*
+role-analytics-ro,bkt-marketing,CAN_READ,s3:GetObject
+role-analytics-ro,bkt-dev-scratch,CAN_READ,s3:GetObject
+role-staging-admin,sec-staging-db,CAN_READ,secrets:GetSecretValue
+role-observability,sec-replica-ro,CAN_READ,secrets:GetSecretValue
+role-observability,bkt-metrics,CAN_READ,s3:GetObject
+sec-ledger-db,db-ledger,GRANTS,postgres login
+sec-redis,cache-checkout,GRANTS,redis AUTH
+sec-staging-db,db-staging-orders,GRANTS,postgres login
+sec-replica-ro,db-ledger-replica,GRANTS,postgres login
+role-prod-deploy,acct-prod,ADMIN_OF,AdministratorAccess
+role-staging-admin,acct-staging,ADMIN_OF,AdministratorAccess
+acct-prod,db-ledger,CONTAINS,
+acct-prod,bkt-customer-pii,CONTAINS,

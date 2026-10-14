@@ -1,0 +1,5 @@
+project: attack-paths
+environments:
+  default:
+    runtime: "python312"
+    requirements: requirements.txt
