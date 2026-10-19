@@ -2,7 +2,7 @@
 #
 # /// script
 # requires-python = ">=3.12,<3.14"
-# dependencies = ["chalkcompute==2.13.5"]
+# dependencies = ["chalkcompute>=2.13.8"]
 # ///
 """Deploy the demo's live API (server.py) as a ScalingGroup.
 
@@ -12,45 +12,30 @@ It needs a service token that can only run online queries, stored as a Chalk sec
     jq -j .client_secret token.json | chalk secret set ATTACK_PATHS_DEMO_CLIENT_SECRET
     ./deploy_api.py --client-id "$(jq -r .client_id token.json)"
 
-Credentials for the deploy itself come from `chalk config` (or the CHALK_* env vars).
+Credentials for the deploy itself come from your existing `chalk login` (or the CHALK_* env vars).
 """
 
 from __future__ import annotations
 
 import argparse
-import json
-import os
-import subprocess
 import time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 
 
-def load_chalk_env(env_id: str | None) -> None:
-    if "CHALK_CLIENT_ID" not in os.environ:
-        cfg = json.loads(subprocess.check_output(["chalk", "config", "--json"]))
-        os.environ["CHALK_API_SERVER"] = cfg["apiServer"]["value"]
-        os.environ["CHALK_CLIENT_ID"] = cfg["clientId"]["value"]
-        os.environ["CHALK_CLIENT_SECRET"] = cfg["clientSecret"]["value"]
-        os.environ.setdefault("CHALK_ENVIRONMENT_ID", cfg["environment"]["value"])
-    if env_id:
-        os.environ["CHALK_ENVIRONMENT_ID"] = env_id
-
-
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--name", default="attack-paths")
-    parser.add_argument("--env-id", default=None)
-    parser.add_argument("--branch", default="attack-paths")
     parser.add_argument(
         "--client-id", required=True, help="client id of the online-query-only token"
     )
-    parser.add_argument("--secret", default="ATTACK_PATHS_DEMO_CLIENT_SECRET")
     args = parser.parse_args()
 
-    load_chalk_env(args.env_id)
-    from chalkcompute import Image, ReadinessProbe, ScalingGroup, Secret
+    from chalkcompute import ConnectClient, Image, ReadinessProbe, ScalingGroup, Secret
+
+    with ConnectClient() as connection:
+        api_server = connection.api_server
+        environment_id = connection.environment_id
 
     image = (
         Image.debian_slim(python_version="3.12")
@@ -72,15 +57,15 @@ def main() -> None:
 
     sg = ScalingGroup(
         image=image,
-        name=args.name,
+        name='attack-paths',
         cpu="1",
         memory="2Gi",
         env={
-            "AP_CHALK_API_SERVER": os.environ["CHALK_API_SERVER"],
-            "AP_CHALK_ENVIRONMENT_ID": os.environ["CHALK_ENVIRONMENT_ID"],
-            "AP_CHALK_BRANCH": args.branch,
+            "AP_CHALK_API_SERVER": api_server,
+            "AP_CHALK_ENVIRONMENT_ID": environment_id,
+            "AP_CHALK_BRANCH": 'attack-paths',
             "AP_CHALK_CLIENT_ID": args.client_id,
-            "AP_CHALK_CLIENT_SECRET": Secret.from_chalk_env(args.secret),
+            "AP_CHALK_CLIENT_SECRET": Secret.from_chalk_env('ATTACK_PATHS_DEMO_CLIENT_SECRET'),
             "PORT": "8080",
         },
         entrypoint=["python", "/app/server.py"],

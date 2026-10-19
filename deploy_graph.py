@@ -2,7 +2,7 @@
 #
 # /// script
 # requires-python = ">=3.12,<3.14"
-# dependencies = ["chalkcompute==2.13.5"]
+# dependencies = ["chalkcompute>=2.13.8"]
 # ///
 """Deploy the graph database (Neo4j, read-only) as a ScalingGroup.
 
@@ -17,39 +17,18 @@ A server that was already running when the secret was set does not see it until 
 that case write the URL to attack_paths/graph_location.py as `GRAPH_URL = "..."` (gitignored), and
 deploy from a directory where it is not ignored.
 
-Credentials for the deploy come from `chalk config` (or the CHALK_* env vars).
+Credentials for the deploy come from your existing `chalk login` (or the CHALK_* env vars).
 """
 
 from __future__ import annotations
 
-import argparse
-import json
-import os
-import subprocess
 import time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 
 
-def load_chalk_env(env_id: str | None) -> None:
-    if "CHALK_CLIENT_ID" not in os.environ:
-        cfg = json.loads(subprocess.check_output(["chalk", "config", "--json"]))
-        os.environ["CHALK_API_SERVER"] = cfg["apiServer"]["value"]
-        os.environ["CHALK_CLIENT_ID"] = cfg["clientId"]["value"]
-        os.environ["CHALK_CLIENT_SECRET"] = cfg["clientSecret"]["value"]
-        os.environ.setdefault("CHALK_ENVIRONMENT_ID", cfg["environment"]["value"])
-    if env_id:
-        os.environ["CHALK_ENVIRONMENT_ID"] = env_id
-
-
 def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--name", default="attack-paths-graph")
-    parser.add_argument("--env-id", default=None)
-    args = parser.parse_args()
-
-    load_chalk_env(args.env_id)
     from chalkcompute import Image, ReadinessProbe, ScalingGroup
 
     image = (
@@ -69,7 +48,7 @@ def main() -> None:
     )
     sg = ScalingGroup(
         image=image,
-        name=args.name,
+        name='attack-paths-graph',
         cpu="1",
         memory="2Gi",
         env={

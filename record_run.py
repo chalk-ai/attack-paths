@@ -10,15 +10,12 @@ Each graph feature is compared with reference.py, and each verdict with the expe
 change to the estate, the Cypher or the scoring shows up here. The saved responses are the
 recorded run the demo page falls back to when the live API is unreachable.
 
-    ./record_run.py --branch attack-paths
+    ./record_run.py
 """
 
 from __future__ import annotations
 
-import argparse
 import json
-import os
-import subprocess
 import sys
 import time
 from pathlib import Path
@@ -44,36 +41,8 @@ EXPECTED = {
 }
 
 
-def client_from_config(branch: str, env_id: str | None) -> ChalkClient:
-    if "CHALK_CLIENT_ID" in os.environ:
-        cid, secret, server = (
-            os.environ[k]
-            for k in ("CHALK_CLIENT_ID", "CHALK_CLIENT_SECRET", "CHALK_API_SERVER")
-        )
-        env = env_id or os.environ["CHALK_ENVIRONMENT_ID"]
-    else:
-        cfg = json.loads(subprocess.check_output(["chalk", "config", "--json"]))
-        cid, secret, server = (
-            cfg["clientId"]["value"],
-            cfg["clientSecret"]["value"],
-            cfg["apiServer"]["value"],
-        )
-        env = env_id or cfg["environment"]["value"]
-    return ChalkClient(
-        client_id=cid,
-        client_secret=secret,
-        api_server=server,
-        environment=env,
-        branch=branch,
-    )
-
-
 def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--branch", default="attack-paths")
-    parser.add_argument("--env-id", default=None)
-    args = parser.parse_args()
-    client = client_from_config(args.branch, args.env_id)
+    client = ChalkClient(branch="attack-paths")
 
     records = []
     failures = 0
@@ -114,7 +83,7 @@ def main() -> None:
     out.write_text(
         json.dumps(
             {
-                "branch": args.branch,
+                "branch": 'attack-paths',
                 "recorded_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                 "runs": records,
             },
