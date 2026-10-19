@@ -17,8 +17,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
-import subprocess
 import sys
 import time
 from pathlib import Path
@@ -45,27 +43,7 @@ EXPECTED = {
 
 
 def client_from_config(branch: str, env_id: str | None) -> ChalkClient:
-    if "CHALK_CLIENT_ID" in os.environ:
-        cid, secret, server = (
-            os.environ[k]
-            for k in ("CHALK_CLIENT_ID", "CHALK_CLIENT_SECRET", "CHALK_API_SERVER")
-        )
-        env = env_id or os.environ["CHALK_ENVIRONMENT_ID"]
-    else:
-        cfg = json.loads(subprocess.check_output(["chalk", "config", "--json"]))
-        cid, secret, server = (
-            cfg["clientId"]["value"],
-            cfg["clientSecret"]["value"],
-            cfg["apiServer"]["value"],
-        )
-        env = env_id or cfg["environment"]["value"]
-    return ChalkClient(
-        client_id=cid,
-        client_secret=secret,
-        api_server=server,
-        environment=env,
-        branch=branch,
-    )
+    return ChalkClient(branch=branch, environment=env_id)
 
 
 def main() -> None:
