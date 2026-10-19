@@ -25,12 +25,10 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 
 
-def configure_chalk(env_id: str | None) -> None:
+def configure_chalk() -> None:
     """Resolve deployment routing settings using the SDK's ambient login."""
     from chalkcompute import ConnectClient
 
-    if env_id:
-        os.environ["CHALK_ENVIRONMENT"] = env_id
     client = ConnectClient()
     try:
         client._ensure_auth()
@@ -43,16 +41,12 @@ def configure_chalk(env_id: str | None) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--name", default="attack-paths")
-    parser.add_argument("--env-id", default=None)
-    parser.add_argument("--branch", default="attack-paths")
     parser.add_argument(
         "--client-id", required=True, help="client id of the online-query-only token"
     )
-    parser.add_argument("--secret", default="ATTACK_PATHS_DEMO_CLIENT_SECRET")
     args = parser.parse_args()
 
-    configure_chalk(args.env_id)
+    configure_chalk()
     from chalkcompute import Image, ReadinessProbe, ScalingGroup, Secret
 
     image = (
@@ -75,15 +69,15 @@ def main() -> None:
 
     sg = ScalingGroup(
         image=image,
-        name=args.name,
+        name='attack-paths',
         cpu="1",
         memory="2Gi",
         env={
             "AP_CHALK_API_SERVER": os.environ["CHALK_API_SERVER"],
             "AP_CHALK_ENVIRONMENT_ID": os.environ["CHALK_ENVIRONMENT_ID"],
-            "AP_CHALK_BRANCH": args.branch,
+            "AP_CHALK_BRANCH": 'attack-paths',
             "AP_CHALK_CLIENT_ID": args.client_id,
-            "AP_CHALK_CLIENT_SECRET": Secret.from_chalk_env(args.secret),
+            "AP_CHALK_CLIENT_SECRET": Secret.from_chalk_env('ATTACK_PATHS_DEMO_CLIENT_SECRET'),
             "PORT": "8080",
         },
         entrypoint=["python", "/app/server.py"],

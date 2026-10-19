@@ -10,12 +10,11 @@ Each graph feature is compared with reference.py, and each verdict with the expe
 change to the estate, the Cypher or the scoring shows up here. The saved responses are the
 recorded run the demo page falls back to when the live API is unreachable.
 
-    ./record_run.py --branch attack-paths
+    ./record_run.py
 """
 
 from __future__ import annotations
 
-import argparse
 import json
 import sys
 import time
@@ -42,16 +41,8 @@ EXPECTED = {
 }
 
 
-def client_from_config(branch: str, env_id: str | None) -> ChalkClient:
-    return ChalkClient(branch=branch, environment=env_id)
-
-
 def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--branch", default="attack-paths")
-    parser.add_argument("--env-id", default=None)
-    args = parser.parse_args()
-    client = client_from_config(args.branch, args.env_id)
+    client = ChalkClient(branch="attack-paths")
 
     records = []
     failures = 0
@@ -92,7 +83,7 @@ def main() -> None:
     out.write_text(
         json.dumps(
             {
-                "branch": args.branch,
+                "branch": 'attack-paths',
                 "recorded_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                 "runs": records,
             },

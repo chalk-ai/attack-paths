@@ -22,8 +22,6 @@ Credentials for the deploy come from your existing `chalk login` (or the CHALK_*
 
 from __future__ import annotations
 
-import argparse
-import os
 import time
 from pathlib import Path
 
@@ -31,13 +29,6 @@ HERE = Path(__file__).resolve().parent
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--name", default="attack-paths-graph")
-    parser.add_argument("--env-id", default=None)
-    args = parser.parse_args()
-
-    if args.env_id:
-        os.environ["CHALK_ENVIRONMENT"] = args.env_id
     from chalkcompute import Image, ReadinessProbe, ScalingGroup
 
     image = (
@@ -57,7 +48,7 @@ def main() -> None:
     )
     sg = ScalingGroup(
         image=image,
-        name=args.name,
+        name='attack-paths-graph',
         cpu="1",
         memory="2Gi",
         env={

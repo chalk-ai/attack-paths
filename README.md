@@ -57,12 +57,12 @@ exactly, and the verdicts are 4 prioritize, 2 monitor and 2 dismiss.
 You need [`uv`](https://docs.astral.sh/uv/), the Chalk CLI and a Chalk environment.
 
 ```bash
-./deploy_graph.py                                   # Neo4j with the estate, read-only
+./deploy_graph.py # Neo4j with the estate, read-only
 chalk secret set ATTACK_GRAPH_URL=http://sg-<scaling group id>.ns-<environment id>.svc.cluster.local:7474
 chalk apply --branch attack-paths                   # features, resolvers and scoring
 chalk query --branch attack-paths --in security_alert.id=ALR-1041 \
   --out security_alert.triage --out security_alert.risk_score --out security_alert.attack_path
-./record_run.py --branch attack-paths               # all eight alerts, checked against reference.py
+./record_run.py # all eight alerts, checked against reference.py
 ```
 
 The graph's route requires a Chalk token, and Neo4j runs with auth off but read-only, so the
@@ -96,5 +96,5 @@ Apache-2.0.
 
 The SDK reads credentials, API host, and the selected environment from your existing
 `chalk login` in `~/.chalk.yml`, including project-scoped and default logins.
-For unattended runs, `CHALK_CLIENT_ID` and `CHALK_CLIENT_SECRET` remain supported. Where available, `--env-id`
-overrides the target environment; otherwise the SDK uses your login or environment settings.
+For unattended runs, `CHALK_CLIENT_ID` and `CHALK_CLIENT_SECRET` remain supported.
+The examples use the current environment selected by your Chalk login.
